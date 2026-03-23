@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="fa">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GitHub Tunnel</title>
+    <script>
+        // اسکریپت برای ایجاد تونل و ارسال ترافیک به سرور شما
+        let serverUrl = "ws://46.8.231.25:443"; // اینجا باید آدرس سرور خود رو وارد کنید
+        let ws;
+
+        // در هنگام بارگذاری صفحه WebSocket رو باز می‌کنیم
+        window.onload = function() {
+            // ایجاد اتصال WebSocket
+            ws = new WebSocket(serverUrl);
+
+            ws.onopen = function() {
+                console.log("اتصال به سرور برقرار شد.");
+                document.getElementById('status').innerText = 'اتصال به سرور برقرار شد.';
+            };
+
+            ws.onmessage = function(event) {
+                console.log("دریافت پیام از سرور:", event.data);
+            };
+
+            ws.onerror = function(error) {
+                console.error("خطا در اتصال:", error);
+                document.getElementById('status').innerText = 'خطا در اتصال به سرور.';
+            };
+
+            ws.onclose = function() {
+                console.log("اتصال قطع شد.");
+                document.getElementById('status').innerText = 'اتصال قطع شد.';
+            };
+        };
+
+        // ارسال داده به سرور از طریق WebSocket
+        function sendMessage() {
+            let message = document.getElementById('inputMessage').value;
+            if (ws && ws.readyState === WebSocket.OPEN) {
+                ws.send(message);
+                console.log("پیام ارسال شد:", message);
+            }
+        }
+    </script>
+</head>
+<body>
+    <h1>خوش آمدید به تونل گیت‌هاب</h1>
+    <p id="status">در حال بارگذاری...</p>
+
+    <input type="text" id="inputMessage" placeholder="پیام خود را وارد کنید" />
+    <button onclick="sendMessage()">ارسال پیام</button>
+
+    <p>برای استفاده از تونل، پیام‌های خود را ارسال کنید.</p>
+</body>
+</html>
